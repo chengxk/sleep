@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
-import android.util.Log
 import android.util.SparseArray
 import android.view.MenuItem
 import android.widget.SeekBar
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
     val map: SparseArray<String> = SparseArray()
-    val bgList: List<Int> = listOf(R.mipmap.background_thunder, R.mipmap.background_big_rain, R.mipmap.background_small_rain)
+    val bgList: List<Int> = listOf(R.mipmap.background_small_rain, R.mipmap.background_big_rain, R.mipmap.background_thunder)
 
     val list: MutableList<Fragment> = mutableListOf()
 
@@ -57,11 +56,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    val alpha: Int = 30
+    val alpha: Int = 0X33FFFFFF
 
     val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("aaa", "onReceive")
             if (mediaPlayer.isPlaying)
                 mediaPlayer.stop()
             mediaPlayer.reset()
@@ -82,7 +80,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bgList.mapTo(list) { MainFragment.newInstance(it) }
 
         binding.toolbar.setTitle(R.string.app_name)
-        binding.toolbar.background.alpha = alpha
+        val rgb = resources.getColor(R.color.colorPrimary)
+        updateToolColors(rgb, rgb)
+
 
         val toggle = ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -102,9 +102,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 updateSound(position)
             }
         })
-        binding.viewPager.offscreenPageLimit = list.size
+        binding.viewPager.offscreenPageLimit = list.size - 1
         binding.viewPager.adapter = ViewPagerAdapter(list, supportFragmentManager)
-
+        binding.viewPager.currentItem = 1
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
@@ -139,16 +139,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         updateSound(0)
     }
 
+    private fun updateToolColors(rgb: Int, textColor: Int?) {
+        binding.navView.getHeaderView(0).setBackgroundColor(rgb)
+        binding.toolbar.setBackgroundColor(rgb and alpha)
+        if (textColor == null) {
+            binding.toolbar.setTitleTextColor(rgb)
+        } else {
+            binding.toolbar.setTitleTextColor(textColor)
+        }
+    }
+
     private fun updateSound(position: Int) {
         val fragment = list[position]
         if (fragment is MainFragment) {
             val lightMutedSwatch = fragment.lightMutedSwatch
 
             if (lightMutedSwatch?.rgb != null) {
-                val rgb = lightMutedSwatch?.rgb as Int
-                binding.navView.getHeaderView(0).setBackgroundColor(rgb)
-                binding.toolbar.setBackgroundColor(rgb)
-                binding.toolbar.background.alpha = alpha
+                val rgb = lightMutedSwatch?.rgb
+                if (rgb != null) {
+                    updateToolColors(rgb, lightMutedSwatch?.bodyTextColor)
+                }
             }
 
             play(map[fragment.resId])
@@ -174,8 +184,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onDestroy()
         unregisterReceiver(receiver)
 
-        mediaPlayer?.reset()
-        mediaPlayer?.release()
+        mediaPlayer.reset()
+        mediaPlayer.release()
     }
 
     override fun onBackPressed() {
@@ -221,10 +231,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val lightMutedSwatch = fragment.lightMutedSwatch
 
                 if (lightMutedSwatch?.rgb != null) {
-                    val rgb = lightMutedSwatch?.rgb as Int
-                    binding.navView.getHeaderView(0).setBackgroundColor(rgb)
-                    binding.toolbar.setBackgroundColor(rgb)
-                    binding.toolbar.background.alpha = alpha
+                    val rgb: Int? = lightMutedSwatch?.rgb
+                    if (rgb != null) {
+                        updateToolColors(rgb, lightMutedSwatch?.bodyTextColor)
+                    }
                 }
             }
         }

@@ -18,43 +18,53 @@
 
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/activity_about"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
         tools:context="com.sleep.ui.AboutActivity">
 
-        <TextView
-            android:id="@+id/app_warning"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textColor="@color/colorWarning"
-            android:text="@{warning}" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
 
-
-        <TextView
-            android:id="@+id/app_description"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/app_warning"
-            android:layout_marginTop="30dp"
-            android:gravity="center_horizontal"
-            android:text="@{desc}" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-        <TextView
-            android:id="@+id/version_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/app_description"
-            android:layout_marginTop="30dp"
-            android:gravity="center_horizontal"
-            android:text="@{version}" />
+            <TextView
+                android:id="@+id/app_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@{warning}"
+                android:textColor="@color/colorWarning" />
 
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/app_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal"
+                android:text="@{desc}" />
+
+            <TextView
+                android:id="@+id/version_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal"
+                android:text="@{version}" />
+
+        </LinearLayout>
+    </LinearLayout>
 </layout>

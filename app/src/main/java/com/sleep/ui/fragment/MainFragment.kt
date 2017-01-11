@@ -59,7 +59,7 @@ class MainFragment : Fragment() {
                     lightMutedSwatch = it.lightMutedSwatch
 
                     if (mListener != null) {
-                        mListener!!.notifyPalette(this@MainFragment, lightMutedSwatch)
+                        mListener!!.notifyPalette(this@MainFragment, it.lightMutedSwatch)
                     }
                 }
             }
