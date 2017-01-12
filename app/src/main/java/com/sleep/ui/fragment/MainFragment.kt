@@ -22,7 +22,7 @@ import com.sleep.databinding.FragmentMainBinding
  */
 class MainFragment : Fragment() {
 
-    var resId: Int = R.mipmap.background_thunder
+    var resId: Int = R.mipmap.background_big_rain
 
     var lightMutedSwatch: Palette.Swatch? = null
 
@@ -43,7 +43,7 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            resId = arguments.getInt("resId", R.mipmap.background_thunder)
+            resId = arguments.getInt("resId", R.mipmap.background_small_rain)
         }
     }
 
@@ -58,7 +58,7 @@ class MainFragment : Fragment() {
                 Palette.Builder(resource).generate {
                     lightMutedSwatch = it.lightMutedSwatch
 
-                    if (mListener != null) {
+                    if (mListener != null && it.lightMutedSwatch != null) {
                         mListener!!.notifyPalette(this@MainFragment, it.lightMutedSwatch)
                     }
                 }

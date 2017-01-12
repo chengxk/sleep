@@ -14,8 +14,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
+import android.text.TextUtils
+import android.util.Log
 import android.util.SparseArray
 import android.view.MenuItem
 import android.widget.SeekBar
@@ -37,7 +38,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
     val map: SparseArray<String> = SparseArray()
-    val bgList: List<Int> = listOf(R.mipmap.background_small_rain, R.mipmap.background_big_rain, R.mipmap.background_thunder)
+    val bgList: List<Int> = listOf(R.mipmap.background_big_rain, R.mipmap.background_small_rain, R.mipmap.background_thunder)
 
     val list: MutableList<Fragment> = mutableListOf()
 
@@ -74,9 +75,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         filter.addAction(action)
         registerReceiver(receiver, filter)
 
-        map.put(R.mipmap.background_thunder, "sound/yisell_sound_thunder.mp3")
-        map.put(R.mipmap.background_big_rain, "sound/yisell_sound_big_rain.mp3")
         map.put(R.mipmap.background_small_rain, "sound/yisell_sound_small_rain.mp3")
+        map.put(R.mipmap.background_big_rain, "sound/yisell_sound_big_rain.mp3")
+        map.put(R.mipmap.background_thunder, "sound/yisell_sound_thunder.mp3")
 
         bgList.mapTo(list) { MainFragment.newInstance(it) }
 
@@ -105,7 +106,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         })
         binding.viewPager.offscreenPageLimit = list.size - 1
         binding.viewPager.adapter = ViewPagerAdapter(list, supportFragmentManager)
-        binding.viewPager.currentItem = 1
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
@@ -127,7 +127,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     alarmManager.cancel(pendingIntent)
                     alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + progress * 60 * 1000, pendingIntent)
                 }
-
+                Log.d("aaa", "onStopTrackingTouch")
                 if (!mediaPlayer.isPlaying) {
                     updateSound(binding.viewPager.currentItem)
                 }
@@ -139,7 +139,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             true
         }
 
-        updateSound(1)
+        updateSound(0)
     }
 
     private fun updateToolColors(rgb: Int, textColor: Int?) {
@@ -163,13 +163,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     updateToolColors(rgb, lightMutedSwatch?.bodyTextColor)
                 }
             }
-
             play(map[fragment.resId])
         }
     }
 
 
-    fun play(path: String) {
+    fun play(path: String?) {
+        if (TextUtils.isEmpty(path)) {
+            Toast.makeText(this, "加载多媒体失败", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         mediaPlayer.reset()
         mediaPlayer.isLooping = true
         val fd: AssetFileDescriptor = assets.openFd(path)
@@ -239,13 +243,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             val indexOf = list.indexOf(fragment)
             val currentItem = binding.viewPager.currentItem
             if (indexOf == currentItem) {
-                val lightMutedSwatch = fragment.lightMutedSwatch
-
-                if (lightMutedSwatch?.rgb != null) {
-                    val rgb: Int? = lightMutedSwatch?.rgb
-                    if (rgb != null) {
-                        updateToolColors(rgb, lightMutedSwatch?.bodyTextColor)
-                    }
+                if (swatch != null) {
+                    val rgb: Int = swatch.rgb
+                    updateToolColors(rgb, swatch?.bodyTextColor)
                 }
             }
         }
