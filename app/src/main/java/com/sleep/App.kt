@@ -26,11 +26,11 @@ class App : Application() {
         versionCode = packageInfo?.versionCode
 
 
-//        if (!BuildConfig.DEBUG) {
-        val config: MobclickAgent.UMAnalyticsConfig = MobclickAgent.UMAnalyticsConfig(this, "58771aefc62dca59b3000605", "xiaomi")
-        config.mIsCrashEnable = true
-        MobclickAgent.startWithConfigure(config)
-//        }
+        if (!BuildConfig.DEBUG) {
+            val config: MobclickAgent.UMAnalyticsConfig = MobclickAgent.UMAnalyticsConfig(this, "58771aefc62dca59b3000605", "xiaomi")
+            config.mIsCrashEnable = true
+            MobclickAgent.startWithConfigure(config)
+        }
 
         initHotfix()
     }
