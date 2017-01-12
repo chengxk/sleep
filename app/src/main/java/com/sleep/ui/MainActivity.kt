@@ -9,6 +9,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -26,7 +27,7 @@ import com.sleep.databinding.ActivityMainBinding
 import com.sleep.ui.fragment.MainFragment
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
 
     val prefs: SharedPreferences by lazy {
         getSharedPreferences(CommonConstants.DEFAULT_PRE, Context.MODE_PRIVATE)
@@ -117,7 +118,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (seekBar == null)
                     return
                 val progress: Int = (seekBar.progress + 1) * 10
-                Toast.makeText(this@MainActivity, "$progress 分钟后停止", Toast.LENGTH_SHORT).show()
+
+                Snackbar.make(binding.drawerLayout, "$progress 分钟后停止", Snackbar.LENGTH_SHORT).show()
+
                 val trigger = prefs.getInt(CommonConstants.TRIGGER_KEY, defaultTriggerAtMillis)
                 if (progress != trigger) {
                     prefs.edit().putInt(CommonConstants.TRIGGER_KEY, progress).apply()
@@ -136,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
-        updateSound(0)
+        updateSound(1)
     }
 
     private fun updateToolColors(rgb: Int, textColor: Int?) {
@@ -188,10 +191,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mediaPlayer.release()
     }
 
+    var lastTime: Long = 0
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
+            val cur = System.currentTimeMillis()
+            if (cur - lastTime > 2000) {
+                Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
+
+                lastTime = cur
+                return
+            }
             super.onBackPressed()
         }
     }

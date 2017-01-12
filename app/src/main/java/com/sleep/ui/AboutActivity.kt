@@ -9,7 +9,7 @@ import com.sleep.App
 import com.sleep.R
 import com.sleep.databinding.ActivityAboutBinding
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : BaseActivity() {
 
 
     companion object {

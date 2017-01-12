@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import com.taobao.hotfix.HotFixManager
 import com.taobao.hotfix.util.PatchStatusCode
+import com.umeng.analytics.MobclickAgent
 import com.zhy.http.okhttp.OkHttpUtils
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -26,6 +27,13 @@ class App : Application() {
 
         versionName = packageInfo?.versionName
         versionCode = packageInfo?.versionCode
+
+
+//        if (!BuildConfig.DEBUG) {
+        val config: MobclickAgent.UMAnalyticsConfig = MobclickAgent.UMAnalyticsConfig(this, "58771aefc62dca59b3000605", "xiaomi")
+        config.mIsCrashEnable = true
+        MobclickAgent.startWithConfigure(config)
+//        }
 
         val okHttpClient = OkHttpClient.Builder()
                 //                .addInterceptor(new LoggerInterceptor("TAG"))
