@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/zhuge/桌面/Sleep/app/libs"/></dataSet><dataSet config="release"><source path="/home/zhuge/桌面/Sleep/app/src/release/jniLibs"/></dataSet></merger>
