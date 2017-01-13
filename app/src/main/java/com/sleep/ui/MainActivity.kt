@@ -117,13 +117,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 if (seekBar == null)
                     return
-                val progress: Int = (seekBar.progress + 1) * 10
-
-                Snackbar.make(binding.drawerLayout, "$progress 分钟后停止", Snackbar.LENGTH_SHORT).show()
+                val cur = seekBar.progress + 1
 
                 val trigger = prefs.getInt(CommonConstants.TRIGGER_KEY, defaultTriggerAtMillis)
-                if (progress != trigger) {
-                    prefs.edit().putInt(CommonConstants.TRIGGER_KEY, progress).apply()
+                if (cur != trigger) {
+                    val progress: Int = cur * 10
+
+                    Snackbar.make(binding.drawerLayout, "$progress 分钟后停止", Snackbar.LENGTH_SHORT).show()
+
+                    prefs.edit().putInt(CommonConstants.TRIGGER_KEY, cur).apply()
                     alarmManager.cancel(pendingIntent)
                     alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + progress * 60 * 1000, pendingIntent)
                 }
@@ -138,8 +140,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mp?.reset()
             true
         }
+        val trigger = prefs.getInt(CommonConstants.TRIGGER_KEY, defaultTriggerAtMillis)
+        //最小值从1开始
+        binding.seekBar.progress = trigger - 1
 
         updateSound(0)
+
     }
 
     private fun updateToolColors(rgb: Int, textColor: Int?) {
