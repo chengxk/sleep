@@ -27,7 +27,7 @@ class App : Application() {
 
 
         if (!BuildConfig.DEBUG) {
-            val config: MobclickAgent.UMAnalyticsConfig = MobclickAgent.UMAnalyticsConfig(this, "58771aefc62dca59b3000605", "xiaomi")
+            val config: MobclickAgent.UMAnalyticsConfig = MobclickAgent.UMAnalyticsConfig(this, "58785639734be411a800083e", "xiaomi")
             config.mIsCrashEnable = true
             MobclickAgent.startWithConfigure(config)
         }

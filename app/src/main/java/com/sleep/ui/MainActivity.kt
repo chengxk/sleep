@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.graphics.Palette
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseArray
 import android.view.MenuItem
 import android.widget.SeekBar
@@ -44,7 +43,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     val mediaPlayer: MediaPlayer = MediaPlayer()
 
-    val defaultTriggerAtMillis: Int = 30
+    val defaultTriggerAtMillis: Int = 3
 
     val alarmManager: AlarmManager by lazy {
         getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -129,7 +128,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     alarmManager.cancel(pendingIntent)
                     alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + progress * 60 * 1000, pendingIntent)
                 }
-                Log.d("aaa", "onStopTrackingTouch")
                 if (!mediaPlayer.isPlaying) {
                     updateSound(binding.viewPager.currentItem)
                 }
@@ -190,7 +188,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val trigger = prefs.getInt(CommonConstants.TRIGGER_KEY, defaultTriggerAtMillis)
         alarmManager.cancel(pendingIntent)
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + trigger * 60 * 1000, pendingIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + trigger * 10 * 60 * 1000, pendingIntent)
     }
 
     override fun onDestroy() {
